@@ -36,14 +36,20 @@
     </dependency>
 
     <dependency>
-      <groupId>com.facebook.presto.hadoop</groupId>
-      <artifactId>hadoop-cdh4</artifactId>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
       <optional>true</optional>
     </dependency>
 
     <dependency>
-      <groupId>com.facebook.presto.hive</groupId>
-      <artifactId>hive-apache</artifactId>
+        <groupId>org.apache.hive</groupId>
+        <artifactId>hive-exec</artifactId>
+        <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-serde</artifactId>
       <optional>true</optional>
     </dependency>
 

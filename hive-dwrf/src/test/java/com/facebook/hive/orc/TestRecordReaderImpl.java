@@ -1,7 +1,7 @@
 package com.facebook.hive.orc;
 
 import com.facebook.hive.orc.lazy.OrcLazyRow;
-import com.facebook.presto.hadoop.shaded.com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;

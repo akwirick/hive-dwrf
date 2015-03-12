@@ -18,25 +18,14 @@
 
 package com.facebook.hive.orc;
 
-import static junit.framework.Assert.assertEquals;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.facebook.hive.orc.compression.CompressionKind;
+import com.facebook.hive.orc.lazy.OrcLazyMap;
+import com.facebook.hive.orc.lazy.OrcLazyStruct;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.serde2.ReaderWriterProfiler;
-import org.apache.hadoop.hive.serde2.objectinspector.MapObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils;
-import org.apache.hadoop.hive.serde2.objectinspector.StructField;
-import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.StringObjectInspector;
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoFactory;
@@ -46,8 +35,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.facebook.hive.orc.lazy.OrcLazyMap;
-import com.facebook.hive.orc.lazy.OrcLazyStruct;
+import java.io.File;
+import java.util.*;
+
+import static junit.framework.Assert.assertEquals;
 
 /**
  * Tests for the writer for map columns in ORC files.
@@ -280,7 +271,12 @@ public class TestMapTreeWriter {
             new VisibleJavaStringObjectInspector());
       }
 
-      @Override
+        @Override
+        public int getFieldID() {
+            return 0;
+        }
+
+        @Override
       public String getFieldComment() {
         return null;
       }

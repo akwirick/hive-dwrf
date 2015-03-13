@@ -1,0 +1,28 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/component/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/component/1.1.2 http://maven.apache.org/xsd/component-1.1.2.xsd">
+    <id>hive-dwrf-assembly</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <moduleSets>
+        <moduleSet>
+            <!-- Enable access to all projects in the current multimodule
+                build! -->
+            <useAllReactorProjects>true</useAllReactorProjects>
+            <binaries>
+                <unpack>false</unpack>
+                <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+                <dependencySets>
+                    <dependencySet>
+                        <includes>
+                            <include>it.unimi.dsi:fastutil</include>
+                        </includes>
+                        <unpack>false</unpack>
+                        <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+                    </dependencySet>
+                </dependencySets>
+            </binaries>
+        </moduleSet>
+    </moduleSets>
+
+</assembly>

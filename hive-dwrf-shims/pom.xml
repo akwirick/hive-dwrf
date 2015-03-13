@@ -20,7 +20,7 @@
   <parent>
     <groupId>com.facebook.hive</groupId>
     <artifactId>hive-dwrf-root</artifactId>
-    <version>0.18.7-SNAPSHOT</version>
+    <version>cdh5-SNAPSHOT</version>
   </parent>
 
   <artifactId>hive-dwrf-shims</artifactId>
@@ -33,13 +33,16 @@
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-serde</artifactId>
-      <optional>true</optional>
     </dependency>
 
     <dependency>
       <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-client</artifactId>
-      <optional>true</optional>
+      <artifactId>hadoop-mapreduce-client-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
     </dependency>
 
     <dependency>

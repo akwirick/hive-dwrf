@@ -19,10 +19,7 @@
  */
 package com.facebook.hive.orc;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Properties;
-
+import com.facebook.hive.orc.OrcSerde.OrcSerdeRow;
 import com.facebook.hive.orc.compression.CompressionKind;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -42,7 +39,9 @@ import org.apache.hadoop.mapred.RecordWriter;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.Progressable;
 
-import com.facebook.hive.orc.OrcSerde.OrcSerdeRow;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * A Hive OutputFormat for ORC files.
@@ -131,7 +130,7 @@ public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
 
     // To be compatible with older file formats like Sequence and RC
     // Only works if mapred.work.output.dir is set in the conf
-    Path workOutputPath = FileOutputFormat.getWorkOutputPath(conf);
+    Path workOutputPath = FileOutputFormat.getTaskOutputPath(conf, name);
     Path outputPath = workOutputPath == null ? new Path(name) : new Path(workOutputPath, name);
 
     if (fileSystem == null && workOutputPath != null) {

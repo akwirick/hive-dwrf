@@ -17,15 +17,8 @@
  */
 package com.facebook.hive.orc;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
+import com.facebook.hive.orc.OrcSerde.OrcSerdeRow;
+import com.facebook.hive.orc.lazy.OrcLazyRow;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -42,20 +35,20 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.IntObjectInspecto
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.StringObjectInspector;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.mapred.FileInputFormat;
-import org.apache.hadoop.mapred.InputFormat;
-import org.apache.hadoop.mapred.InputSplit;
-import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.OutputFormat;
-import org.apache.hadoop.mapred.RecordWriter;
-import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapred.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.facebook.hive.orc.OrcSerde.OrcSerdeRow;
-import com.facebook.hive.orc.lazy.OrcLazyRow;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
 
 public class TestInputOutputFormat {
 
@@ -92,6 +85,7 @@ public class TestInputOutputFormat {
     fs = FileSystem.getLocal(conf);
     testFilePath = new Path(workDir, "TestInputOutputFormat." +
         testCaseName.getMethodName() + ".orc");
+    conf.set("mapreduce.output.fileoutputformat.outputdir", testFilePath.toString());
     fs.delete(testFilePath, false);
   }
 
@@ -213,6 +207,7 @@ public class TestInputOutputFormat {
   @Test
   public void testMROutput() throws Exception {
     JobConf job = new JobConf(conf);
+    job.set("mapreduce.output.fileoutputformat.outputdir", testFilePath.toString());
     Properties properties = new Properties();
     StructObjectInspector inspector;
     synchronized (TestOrcFile.class) {

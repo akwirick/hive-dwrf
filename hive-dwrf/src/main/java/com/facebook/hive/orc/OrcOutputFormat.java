@@ -130,7 +130,7 @@ public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
 
     // To be compatible with older file formats like Sequence and RC
     // Only works if mapred.work.output.dir is set in the conf
-    Path workOutputPath = FileOutputFormat.getTaskOutputPath(conf, name);
+    Path workOutputPath = FileOutputFormat.getWorkOutputPath(conf);
     Path outputPath = workOutputPath == null ? new Path(name) : new Path(workOutputPath, name);
 
     if (fileSystem == null && workOutputPath != null) {

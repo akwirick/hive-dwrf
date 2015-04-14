@@ -48,11 +48,11 @@ import com.facebook.hive.orc.OrcSerde.OrcSerdeRow;
  * A Hive OutputFormat for ORC files.
  */
 public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
-        implements HiveOutputFormat<NullWritable, OrcSerdeRow> {
+                        implements HiveOutputFormat<NullWritable, OrcSerdeRow> {
 
   private static class OrcRecordWriter
-          implements RecordWriter<NullWritable, OrcSerdeRow>,
-          StatsProvidingRecordWriter {
+      implements RecordWriter<NullWritable, OrcSerdeRow>,
+                 StatsProvidingRecordWriter {
     private Writer writer = null;
     private final FileSystem fs;
     private final Path path;
@@ -81,7 +81,7 @@ public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
                       OrcSerdeRow row) throws IOException {
       if (writer == null) {
         writer = OrcFile.createWriter(fs, path, this.conf, row.getInspector(),
-                stripeSize, compress, compressionSize, rowIndexStride);
+            stripeSize, compress, compressionSize, rowIndexStride);
       }
       writer.addRow(row.getRow());
     }
@@ -91,8 +91,8 @@ public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
       OrcSerdeRow serdeRow = (OrcSerdeRow) row;
       if (writer == null) {
         writer = OrcFile.createWriter(fs, path, this.conf,
-                serdeRow.getInspector(), stripeSize, compress, compressionSize,
-                rowIndexStride);
+            serdeRow.getInspector(), stripeSize, compress, compressionSize,
+            rowIndexStride);
       }
       writer.addRow(serdeRow.getRow());
     }
@@ -109,10 +109,10 @@ public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
       if (writer == null) {
         // a row with no columns
         ObjectInspector inspector = ObjectInspectorFactory.
-                getStandardStructObjectInspector(new ArrayList<String>(),
-                        new ArrayList<ObjectInspector>());
+            getStandardStructObjectInspector(new ArrayList<String>(),
+                    new ArrayList<ObjectInspector>());
         writer = OrcFile.createWriter(fs, path, this.conf, inspector,
-                stripeSize, compress, compressionSize, rowIndexStride);
+            stripeSize, compress, compressionSize, rowIndexStride);
       }
       writer.close();
     }
@@ -126,25 +126,25 @@ public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
 
   @Override
   public RecordWriter<NullWritable, OrcSerdeRow> getRecordWriter(FileSystem fileSystem,
-                                                                 JobConf conf, String name, Progressable reporter) throws IOException {
+       JobConf conf, String name, Progressable reporter) throws IOException {
     ReaderWriterProfiler.setProfilerOptions(conf);
 
-    // Formerly used getWorkOutputPath(...) for compatibility with old code, that breaks with spark however, so changed
-    // to getTaskOutputPath(...) instead
+    // To be compatible with older file formats like Sequence and RC
+    // Only works if mapred.work.output.dir is set in the conf
 //    Path workOutputPath = FileOutputFormat.getWorkOutputPath(conf);
     Path outputPath = FileOutputFormat.getTaskOutputPath(conf, name);
 
     return new OrcRecordWriter(fileSystem, outputPath, conf,
-            OrcConf.ConfVars.HIVE_ORC_STRIPE_SIZE.defaultLongVal,
-            OrcConf.ConfVars.HIVE_ORC_COMPRESSION.defaultVal,
-            OrcConf.ConfVars.HIVE_ORC_COMPRESSION_BLOCK_SIZE.defaultIntVal,
-            OrcConf.ConfVars.HIVE_ORC_ROW_INDEX_STRIDE.defaultIntVal);
+      OrcConf.ConfVars.HIVE_ORC_STRIPE_SIZE.defaultLongVal,
+      OrcConf.ConfVars.HIVE_ORC_COMPRESSION.defaultVal,
+      OrcConf.ConfVars.HIVE_ORC_COMPRESSION_BLOCK_SIZE.defaultIntVal,
+      OrcConf.ConfVars.HIVE_ORC_ROW_INDEX_STRIDE.defaultIntVal);
   }
 
   @Override
   public FileSinkOperator.RecordWriter getHiveRecordWriter(JobConf conf, Path path,
-                                                           Class<? extends Writable> valueClass, boolean isCompressed, Properties tableProperties,
-                                                           Progressable reporter) throws IOException {
+      Class<? extends Writable> valueClass, boolean isCompressed, Properties tableProperties,
+      Progressable reporter) throws IOException {
     ReaderWriterProfiler.setProfilerOptions(conf);
     String stripeSizeStr = tableProperties.getProperty(OrcFile.STRIPE_SIZE);
     long stripeSize;
@@ -165,7 +165,7 @@ public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
       compressionSize = Integer.valueOf(compressionSizeStr);
     } else {
       compressionSize = OrcConf.getIntVar(conf,
-              OrcConf.ConfVars.HIVE_ORC_COMPRESSION_BLOCK_SIZE);
+          OrcConf.ConfVars.HIVE_ORC_COMPRESSION_BLOCK_SIZE);
     }
 
     String rowIndexStrideStr = tableProperties.getProperty(OrcFile.ROW_INDEX_STRIDE);
@@ -189,6 +189,6 @@ public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
     }
 
     return new OrcRecordWriter(path.getFileSystem(conf), path, conf,
-            stripeSize, compression, compressionSize, rowIndexStride);
+      stripeSize, compression, compressionSize, rowIndexStride);
   }
 }

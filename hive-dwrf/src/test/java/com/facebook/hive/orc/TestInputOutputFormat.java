@@ -77,7 +77,7 @@ public class TestInputOutputFormat {
 
     @Override
     public void readFields(DataInput dataInput) throws IOException {
-      throw new UnsupportedOperationException("no read");
+     throw new UnsupportedOperationException("no read");
     }
   }
 
@@ -92,7 +92,7 @@ public class TestInputOutputFormat {
     conf = new JobConf();
     fs = FileSystem.getLocal(conf);
     testFilePath = new Path(workDir, "TestInputOutputFormat." +
-            testCaseName.getMethodName() + ".orc");
+        testCaseName.getMethodName() + ".orc");
     fs.delete(testFilePath, false);
   }
 
@@ -102,14 +102,14 @@ public class TestInputOutputFormat {
     StructObjectInspector inspector;
     synchronized (TestOrcFile.class) {
       inspector = (StructObjectInspector)
-              ObjectInspectorFactory.getReflectionObjectInspector(MyRow.class,
-                      ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
+          ObjectInspectorFactory.getReflectionObjectInspector(MyRow.class,
+              ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
     }
     SerDe serde = new OrcSerde();
     HiveOutputFormat<?, ?> outFormat = new OrcOutputFormat();
     FileSinkOperator.RecordWriter writer =
-            outFormat.getHiveRecordWriter(conf, testFilePath, MyRow.class, true,
-                    properties, Reporter.NULL);
+        outFormat.getHiveRecordWriter(conf, testFilePath, MyRow.class, true,
+            properties, Reporter.NULL);
     ReaderWriterProfiler.setProfilerOptions(conf);
     writer.write(serde.serialize(new MyRow(1,2), inspector));
     writer.write(serde.serialize(new MyRow(2,2), inspector));
@@ -130,31 +130,31 @@ public class TestInputOutputFormat {
     // the the validate input method
     ArrayList<FileStatus> fileList = new ArrayList<FileStatus>(3);
     assertEquals(false,
-            ((InputFormatChecker) in).validateInput(fs, new HiveConf(), fileList));
+        ((InputFormatChecker) in).validateInput(fs, new HiveConf(), fileList));
     fileList.add(fs.getFileStatus(testFilePath));
     assertEquals(true,
-            ((InputFormatChecker) in).validateInput(fs, new HiveConf(), fileList));
+        ((InputFormatChecker) in).validateInput(fs, new HiveConf(), fileList));
     fileList.add(fs.getFileStatus(workDir));
     assertEquals(false,
-            ((InputFormatChecker) in).validateInput(fs, new HiveConf(), fileList));
+        ((InputFormatChecker) in).validateInput(fs, new HiveConf(), fileList));
 
 
     // read the whole file
     org.apache.hadoop.mapred.RecordReader reader =
-            in.getRecordReader(splits[0], conf, Reporter.NULL);
+        in.getRecordReader(splits[0], conf, Reporter.NULL);
     Object key = reader.createKey();
     Writable value = (Writable) reader.createValue();
     int rowNum = 0;
     List<? extends StructField> fields =inspector.getAllStructFieldRefs();
     IntObjectInspector intInspector =
-            (IntObjectInspector) fields.get(0).getFieldObjectInspector();
+        (IntObjectInspector) fields.get(0).getFieldObjectInspector();
     assertEquals(0.0, reader.getProgress(), 0.00001);
     assertEquals(0, reader.getPos());
     while (reader.next(key, value)) {
       assertEquals(++rowNum, intInspector.get(inspector.
-              getStructFieldData(serde.deserialize(value), fields.get(0))));
+          getStructFieldData(serde.deserialize(value), fields.get(0))));
       assertEquals(2, intInspector.get(inspector.
-              getStructFieldData(serde.deserialize(value), fields.get(1))));
+          getStructFieldData(serde.deserialize(value), fields.get(1))));
     }
     assertEquals(3, rowNum);
     assertEquals(1.0, reader.getProgress(), 0.00001);
@@ -169,7 +169,7 @@ public class TestInputOutputFormat {
     fields = inspector.getAllStructFieldRefs();
     while (reader.next(key, value)) {
       assertEquals(++rowNum, intInspector.get(inspector.
-              getStructFieldData(value, fields.get(0))));
+          getStructFieldData(value, fields.get(0))));
       assertEquals(null, inspector.getStructFieldData(value, fields.get(1)));
     }
     assertEquals(3, rowNum);
@@ -184,9 +184,9 @@ public class TestInputOutputFormat {
     fields = inspector.getAllStructFieldRefs();
     while (reader.next(key, value)) {
       assertEquals(++rowNum, intInspector.get(inspector.
-              getStructFieldData(value, fields.get(0))));
+          getStructFieldData(value, fields.get(0))));
       assertEquals(2, intInspector.get(inspector.
-              getStructFieldData(serde.deserialize(value), fields.get(1))));
+          getStructFieldData(serde.deserialize(value), fields.get(1))));
     }
     assertEquals(3, rowNum);
     reader.close();
@@ -219,20 +219,20 @@ public class TestInputOutputFormat {
     StructObjectInspector inspector;
     synchronized (TestOrcFile.class) {
       inspector = (StructObjectInspector)
-              ObjectInspectorFactory.getReflectionObjectInspector(NestedRow.class,
-                      ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
+          ObjectInspectorFactory.getReflectionObjectInspector(NestedRow.class,
+              ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
     }
     SerDe serde = new OrcSerde();
     OutputFormat<?, ?> outFormat = new OrcOutputFormat();
     RecordWriter writer =
-            outFormat.getRecordWriter(fs, conf, testFilePath.toString(),
-                    Reporter.NULL);
+        outFormat.getRecordWriter(fs, conf, testFilePath.toString(),
+            Reporter.NULL);
     writer.write(NullWritable.get(),
-            serde.serialize(new NestedRow(1,2,3), inspector));
+        serde.serialize(new NestedRow(1,2,3), inspector));
     writer.write(NullWritable.get(),
-            serde.serialize(new NestedRow(4,5,6), inspector));
+        serde.serialize(new NestedRow(4,5,6), inspector));
     writer.write(NullWritable.get(),
-            serde.serialize(new NestedRow(7,8,9), inspector));
+        serde.serialize(new NestedRow(7,8,9), inspector));
     writer.close(Reporter.NULL);
     serde = new OrcSerde();
     properties.setProperty("columns", "z,r");
@@ -245,23 +245,23 @@ public class TestInputOutputFormat {
     assertEquals(1, splits.length);
     conf.set("hive.io.file.readcolumn.ids", "1");
     org.apache.hadoop.mapred.RecordReader reader =
-            in.getRecordReader(splits[0], conf, Reporter.NULL);
+        in.getRecordReader(splits[0], conf, Reporter.NULL);
     Object key = reader.createKey();
     Object value = reader.createValue();
     int rowNum = 0;
     List<? extends StructField> fields = inspector.getAllStructFieldRefs();
     StructObjectInspector inner = (StructObjectInspector)
-            fields.get(1).getFieldObjectInspector();
+        fields.get(1).getFieldObjectInspector();
     List<? extends StructField> inFields = inner.getAllStructFieldRefs();
     IntObjectInspector intInspector =
-            (IntObjectInspector) inFields.get(0).getFieldObjectInspector();
+        (IntObjectInspector) inFields.get(0).getFieldObjectInspector();
     while (reader.next(key, value)) {
       assertEquals(null, inspector.getStructFieldData(value, fields.get(0)));
       Object sub = inspector.getStructFieldData(value, fields.get(1));
       assertEquals(3*rowNum+1, intInspector.get(inner.getStructFieldData(sub,
-              inFields.get(0))));
+          inFields.get(0))));
       assertEquals(3*rowNum+2, intInspector.get(inner.getStructFieldData(sub,
-              inFields.get(1))));
+          inFields.get(1))));
       rowNum += 1;
     }
     assertEquals(3, rowNum);
@@ -278,16 +278,16 @@ public class TestInputOutputFormat {
     StructObjectInspector inspector;
     synchronized (TestOrcFile.class) {
       inspector = (StructObjectInspector)
-              ObjectInspectorFactory.getReflectionObjectInspector(StringRow.class,
-                      ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
+          ObjectInspectorFactory.getReflectionObjectInspector(StringRow.class,
+              ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
     }
     SerDe serde = new OrcSerde();
     OutputFormat<?, ?> outFormat = new OrcOutputFormat();
     RecordWriter writer =
-            outFormat.getRecordWriter(fs, job, testFilePath.getName(),
-                    Reporter.NULL);
+        outFormat.getRecordWriter(fs, job, testFilePath.getName(),
+            Reporter.NULL);
     writer.write(NullWritable.get(),
-            serde.serialize(new StringRow("a"), inspector));
+        serde.serialize(new StringRow("a"), inspector));
     writer.close(Reporter.NULL);
     serde = new OrcSerde();
     properties.setProperty("columns", "col");
@@ -299,15 +299,15 @@ public class TestInputOutputFormat {
     InputSplit[] splits = in.getSplits(conf, 1);
     assertEquals(1, splits.length);
     org.apache.hadoop.mapred.RecordReader reader =
-            in.getRecordReader(splits[0], conf, Reporter.NULL);
+        in.getRecordReader(splits[0], conf, Reporter.NULL);
     Object key = reader.createKey();
     Object value = reader.createValue();
     int rowNum = 0;
     List<? extends StructField> fields = inspector.getAllStructFieldRefs();
     reader.next(key, value);
     assertEquals("a",
-            ((StringObjectInspector) fields.get(0).getFieldObjectInspector()).getPrimitiveJavaObject(
-                    inspector.getStructFieldData(value, fields.get(0))));
+        ((StringObjectInspector) fields.get(0).getFieldObjectInspector()).getPrimitiveJavaObject(
+            inspector.getStructFieldData(value, fields.get(0))));
     reader.close();
 
   }
@@ -318,8 +318,8 @@ public class TestInputOutputFormat {
     Properties properties = new Properties();
     HiveOutputFormat<?, ?> outFormat = new OrcOutputFormat();
     FileSinkOperator.RecordWriter writer =
-            outFormat.getHiveRecordWriter(conf, testFilePath, MyRow.class, true,
-                    properties, Reporter.NULL);
+        outFormat.getHiveRecordWriter(conf, testFilePath, MyRow.class, true,
+            properties, Reporter.NULL);
     writer.close(true);
     properties.setProperty("columns", "x,y");
     properties.setProperty("columns.types", "int:int");
@@ -333,7 +333,7 @@ public class TestInputOutputFormat {
     // read the whole file
     conf.set("hive.io.file.readcolumn.ids", "0,1");
     org.apache.hadoop.mapred.RecordReader reader =
-            in.getRecordReader(splits[0], conf, Reporter.NULL);
+        in.getRecordReader(splits[0], conf, Reporter.NULL);
     Object key = reader.createKey();
     Object value = reader.createValue();
     assertEquals(0.0, reader.getProgress(), 0.00001);
@@ -368,14 +368,14 @@ public class TestInputOutputFormat {
     StructObjectInspector inspector;
     synchronized (TestOrcFile.class) {
       inspector = (StructObjectInspector)
-              ObjectInspectorFactory.getReflectionObjectInspector(StringRow.class,
-                      ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
+          ObjectInspectorFactory.getReflectionObjectInspector(StringRow.class,
+              ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
     }
     SerDe serde = new OrcSerde();
     HiveOutputFormat<?, ?> outFormat = new OrcOutputFormat();
     FileSinkOperator.RecordWriter writer =
-            outFormat.getHiveRecordWriter(conf, testFilePath, StringRow.class,
-                    true, properties, Reporter.NULL);
+        outFormat.getHiveRecordWriter(conf, testFilePath, StringRow.class,
+            true, properties, Reporter.NULL);
     writer.write(serde.serialize(new StringRow("owen"), inspector));
     writer.write(serde.serialize(new StringRow("beth"), inspector));
     writer.write(serde.serialize(new StringRow("laurel"), inspector));
@@ -395,30 +395,30 @@ public class TestInputOutputFormat {
 
     // read the whole file
     org.apache.hadoop.mapred.RecordReader reader =
-            in.getRecordReader(splits[0], conf, Reporter.NULL);
+        in.getRecordReader(splits[0], conf, Reporter.NULL);
     Object key = reader.createKey();
     Writable value = (Writable) reader.createValue();
     List<? extends StructField> fields =inspector.getAllStructFieldRefs();
     StringObjectInspector strInspector = (StringObjectInspector)
-            fields.get(0).getFieldObjectInspector();
+        fields.get(0).getFieldObjectInspector();
     assertEquals(true, reader.next(key, value));
     assertEquals("owen", strInspector.getPrimitiveJavaObject(inspector.
-            getStructFieldData(value, fields.get(0))));
+        getStructFieldData(value, fields.get(0))));
     assertEquals(true, reader.next(key, value));
     assertEquals("beth", strInspector.getPrimitiveJavaObject(inspector.
-            getStructFieldData(value, fields.get(0))));
+        getStructFieldData(value, fields.get(0))));
     assertEquals(true, reader.next(key, value));
     assertEquals("laurel", strInspector.getPrimitiveJavaObject(inspector.
-            getStructFieldData(value, fields.get(0))));
+        getStructFieldData(value, fields.get(0))));
     assertEquals(true, reader.next(key, value));
     assertEquals("hazen", strInspector.getPrimitiveJavaObject(inspector.
-            getStructFieldData(value, fields.get(0))));
+        getStructFieldData(value, fields.get(0))));
     assertEquals(true, reader.next(key, value));
     assertEquals("colin", strInspector.getPrimitiveJavaObject(inspector.
-            getStructFieldData(value, fields.get(0))));
+        getStructFieldData(value, fields.get(0))));
     assertEquals(true, reader.next(key, value));
     assertEquals("miles", strInspector.getPrimitiveJavaObject(inspector.
-            getStructFieldData(value, fields.get(0))));
+        getStructFieldData(value, fields.get(0))));
     assertEquals(false, reader.next(key, value));
     reader.close();
   }
@@ -437,13 +437,13 @@ public class TestInputOutputFormat {
     StructObjectInspector inspector;
     synchronized (TestOrcFile.class) {
       inspector = (StructObjectInspector)
-              ObjectInspectorFactory.getReflectionObjectInspector(StringRow.class,
-                      ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
+          ObjectInspectorFactory.getReflectionObjectInspector(StringRow.class,
+              ObjectInspectorFactory.ObjectInspectorOptions.JAVA);
     }
     OrcSerde serde = new OrcSerde();
     OrcOutputFormat outFormat = new OrcOutputFormat();
     RecordWriter<NullWritable, OrcSerdeRow> writer =
-            outFormat.getRecordWriter(null, conf, testFilePath.getName(), Reporter.NULL);
+        outFormat.getRecordWriter(null, conf, testFilePath.getName(), Reporter.NULL);
 
     writer.write(NullWritable.get(), (OrcSerdeRow) serde.serialize(new StringRow("a"), inspector));
     writer.write(NullWritable.get(), (OrcSerdeRow) serde.serialize(new StringRow("b"), inspector));
@@ -460,21 +460,21 @@ public class TestInputOutputFormat {
 
     // read the whole file
     org.apache.hadoop.mapred.RecordReader<NullWritable, OrcLazyRow> reader =
-            in.getRecordReader(splits[0], conf, Reporter.NULL);
+        in.getRecordReader(splits[0], conf, Reporter.NULL);
     NullWritable key = reader.createKey();
     OrcLazyRow value = (OrcLazyRow) reader.createValue();
     List<? extends StructField> fields =inspector.getAllStructFieldRefs();
     StringObjectInspector strInspector = (StringObjectInspector)
-            fields.get(0).getFieldObjectInspector();
+        fields.get(0).getFieldObjectInspector();
     assertEquals(true, reader.next(key, value));
     assertEquals("a", strInspector.getPrimitiveJavaObject(inspector.
-            getStructFieldData(value, fields.get(0))));
+        getStructFieldData(value, fields.get(0))));
     assertEquals(true, reader.next(key, value));
     assertEquals("b", strInspector.getPrimitiveJavaObject(inspector.
-            getStructFieldData(value, fields.get(0))));
+        getStructFieldData(value, fields.get(0))));
     assertEquals(true, reader.next(key, value));
     assertEquals("c", strInspector.getPrimitiveJavaObject(inspector.
-            getStructFieldData(value, fields.get(0))));
+        getStructFieldData(value, fields.get(0))));
     assertEquals(false, reader.next(key, value));
     reader.close();
   }

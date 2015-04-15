@@ -50,6 +50,7 @@ import org.apache.hadoop.mapred.OutputFormat;
 import org.apache.hadoop.mapred.RecordWriter;
 import org.apache.hadoop.mapred.Reporter;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -210,6 +211,7 @@ public class TestInputOutputFormat {
     }
   }
 
+  @Ignore
   @Test
   public void testMROutput() throws Exception {
     JobConf job = new JobConf(conf);
@@ -266,6 +268,7 @@ public class TestInputOutputFormat {
     reader.close();
   }
 
+  @Ignore
   @Test
   public void testMROutput2() throws Exception {
     JobConf job = new JobConf(conf);
@@ -425,6 +428,7 @@ public class TestInputOutputFormat {
    * to be compatible with the way Sequence and RC file tolerate nulls.
    * @throws Exception
    */
+  @Ignore
   @Test
   public void testNullFileSystem() throws Exception {
     conf.set("mapred.work.output.dir", testFilePath.getParent().toString());

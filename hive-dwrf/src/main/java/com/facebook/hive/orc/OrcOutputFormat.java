@@ -109,7 +109,7 @@ public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
         // a row with no columns
         ObjectInspector inspector = ObjectInspectorFactory.
             getStandardStructObjectInspector(new ArrayList<String>(),
-                new ArrayList<ObjectInspector>());
+                    new ArrayList<ObjectInspector>());
         writer = OrcFile.createWriter(fs, path, this.conf, inspector,
             stripeSize, compress, compressionSize, rowIndexStride);
       }
@@ -130,12 +130,8 @@ public class OrcOutputFormat extends FileOutputFormat<NullWritable, OrcSerdeRow>
 
     // To be compatible with older file formats like Sequence and RC
     // Only works if mapred.work.output.dir is set in the conf
-    Path workOutputPath = FileOutputFormat.getWorkOutputPath(conf);
-    Path outputPath = workOutputPath == null ? new Path(name) : new Path(workOutputPath, name);
-
-    if (fileSystem == null && workOutputPath != null) {
-      fileSystem = workOutputPath.getFileSystem(conf);
-    }
+//    Path workOutputPath = FileOutputFormat.getWorkOutputPath(conf);
+    Path outputPath = FileOutputFormat.getTaskOutputPath(conf, name);
 
     return new OrcRecordWriter(fileSystem, outputPath, conf,
       OrcConf.ConfVars.HIVE_ORC_STRIPE_SIZE.defaultLongVal,

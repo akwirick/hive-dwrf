@@ -49,7 +49,7 @@
     </scm>
 
     <properties>
-        <project.build.targetJdk>1.7</project.build.targetJdk>
+        <project.build.targetJdk>1.8</project.build.targetJdk>
         <fb.check.skip-extended>true</fb.check.skip-extended>
         <protoc.executable>protoc</protoc.executable>
         <version.presto>0.96</version.presto>

@@ -21,12 +21,15 @@ package com.facebook.hive.orc;
 
 import com.facebook.hive.orc.compression.CompressionKind;
 import com.facebook.hive.orc.statistics.ColumnStatistics;
-
+import com.google.common.collect.Lists;
+import com.google.protobuf.ByteString;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.serde2.ReaderWriterProfiler;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.List;
 
 /**
  * A tool for printing out the file structure of ORC files.
@@ -96,6 +99,18 @@ public final class FileDump {
     }
   }
 
+  private static void printMetadataInformation(Reader reader) {
+    final List<String> metadataKeys = Lists.newArrayList(reader.getMetadataKeys());
+    if (!metadataKeys.isEmpty()) {
+      System.out.println("\nUserMetadata:");
+      for (final String key : metadataKeys) {
+        final ByteBuffer storedValue = reader.getMetadataValue(key);
+        final String value = ByteString.copyFrom(storedValue).toStringUtf8();
+        System.out.println("\n\t" + key + " = " + value);
+      }
+    }
+  }
+
   private static void processFile(String filename, Configuration conf) throws IOException {
     final Path path = new Path(filename);
     ReaderWriterProfiler.setProfilerOptions(conf);
@@ -104,7 +119,7 @@ public final class FileDump {
     final Reader reader = OrcFile.createReader(path.getFileSystem(conf), path, conf);
     final RecordReaderImpl rows = (RecordReaderImpl) reader.rows(null);
     System.out.println("Rows: " + reader.getNumberOfRows());
-
+    printMetadataInformation(reader);
     printCompressionInformation(reader);
     System.out.println("Raw data size: " + reader.getRawDataSize());
     System.out.println("Type: " + reader.getObjectInspector().getTypeName());

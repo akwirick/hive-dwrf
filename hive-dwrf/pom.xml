@@ -18,11 +18,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.facebook.hive</groupId>
-        <artifactId>hive-dwrf-root</artifactId>
-        <version>cdh5-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <groupId>com.facebook.hive</groupId>
+    <artifactId>hive-dwrf-root</artifactId>
+    <version>0.18.10-CDH5</version>
+  </parent>
 
     <artifactId>hive-dwrf</artifactId>
 
